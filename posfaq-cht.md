@@ -1,18 +1,34 @@
-### 什麼是Proof of Stake
+### What is Proof of Stake
 
-Proof of Stake （PoS）是公有鏈共識演算法的一類，乙太坊接下來的 Casper 演算法是其中之一。它和比特幣、目前的以太坊及許多其他區塊鏈背後的Proof of Work有著相似的作用，但在安全性及能源使用效率上有著更顯著的優點。
+### 什麼是 Proof of Stake
 
-總的來說，PoS演算法大致如下。區塊鏈紀錄著一組 **validators** （驗證者），所有持有該區塊鏈數位貨幣的使用者（即以太坊的以太幣）都可藉由一個特殊交易將他們的數位貨幣鎖進一個存庫來成為validator。創造及許可一個新的區塊的過程則藉由一個目前validator可以參與的共識演算法來進行。
+Proof of stake is a category of consensus algorithms for public blockchains, which Ethereum's upcoming Casper algorithm is a part of. It serves a similar function to the proof of work which underpins the security behind Bitcoin, the current version of Ethereum and many other blockchains, but has significant advantages in terms of security and energy efficiency.
 
-目前有許多種的共識演算法及許多種獎賞參與共識的validator的方式，因此有許多不同種類的PoS。從一個演算法的角度，主要分為兩種： 鏈型態的PoS 及 BFT（Byzantine Fault Tolerance）相似的PoS。
+**權益證明 (Proof of Stake, PoS)** 是公有鏈共識演算法的一類，以太坊接下來的 Casper 演算法也是其中之一。它和比特幣、目前的以太坊及許多其他區塊鏈背後的**工作量證明 (Proof of Work)** 有著相似的作用 - 鞏固鏈的安全，但在安全性及能源使用效率上有著更顯著的優點。
 
-在鏈型態的PoS中，演算法在每個時間區間（例如每十秒為一區間）裡以偽隨機的方式選擇validator，並賦予其創造一個區塊的權利。而這個區塊如同區塊鏈，必須指向之前的區塊（通常是指向最長鏈的最新區塊）。所以隨時間拉長，區塊將會匯集並指向單一條持續增長的鏈。
+In general, a proof of stake algorithm looks as follows. The blockchain keeps track of a set of validators, and anyone who holds the blockchain's base cryptocurrency (in Ethereum's case, ether) can become a validator by sending a special type of transaction that locks up their ether into a deposit. The process of creating and agreeing to new blocks is then done through a consensus algorithm that all current validators can participate in.
 
-在BFT相似的PoS中，validator被隨機指派來_提議_（propose）新的區塊，但用多輪投票的方式來決定區塊是否有效，每一輪每個validator送出投票（vote）給特定的區塊。在過程結束之後，validator會在一個區塊是否會成為鏈的一部分的這個議題上達成永久的共識。
+總的來說，PoS 演算法大致如下。區塊鏈上會保持追蹤著一組**驗證者 (Validator)**，任何持有該區塊鏈原幣 (以太坊而言，指的是以太幣) 的人，都可藉由一個特殊交易鎖住他們的以太幣當作押金，成為驗證者。同意新區塊產生的過程會透過一個共識演算法來完成，而所有的驗證者都能夠參與這個過程。
 
-### PoS在和PoW相比下有哪些優點？
+There are many kinds of consensus algorithms, and many ways to assign rewards to validators who participate in the consensus algorithm, so there are many "flavors" of proof of stake. From an algorithmic perspective, there are two major types: chain-based proof of stake and BFT-style proof of stake.
 
-詳細說明可見：[A Proof of Stake Design Philosophy](https://medium.com/@VitalikButerin/a-proof-of-stake-design-philosophy-506585978d51)裡有更完整的論述。 
+有許多的共識演算法以及方式來指派獎勵給參與共識算法的驗證者，因此 PoS 有許多調料。從演算法的角度，主要分為兩種：鏈的權益證明以及**拜占庭容錯 (Byzantine Fault Tolerance, BFT) 形式**的權益證明。
+
+In chain-based proof of stake, the algorithm pseudo-randomly selects a validator during each time slot (eg. every period of 10 seconds might be a time slot), and assigns that validator the right to create a single block, and this block must point to some previous block (normally the block at the end of the previously longest chain), and so over time most blocks converge into a single constantly growing chain.
+
+在鏈的權益證明中，演算法會每隔一段時間 (例如十秒一個間隔)，以偽隨機的方式挑選一個驗證者，並賦予該驗證者擁有建立一個區塊的權利，而這個區塊必須指向前一個區塊 (正常來說為最長鏈的最新區塊)，所以隨著時間，區塊會收斂成一條持續增長的鏈。
+
+In BFT-style proof of stake, validators are randomly assigned the right to propose blocks, but agreeing on which block is canonical is done through a multi-round process where every validator sends a "vote" for some specific block during each round, and at the end of the process all (honest and online) validators permanently agree on whether or not any given block is part of the chain. Note that blocks may still be chained together; the key difference is that consensus on a block can come within one block, and does not depend on the length or size of the chain after it.
+
+在拜占庭容錯形式的權益證明中，一群驗證者會隨機被指派來提出區塊，但是同意以那一個區塊為標準，需要經過多個回合，在每一輪當中，每一個驗證者會投票給特定的區塊，最後一輪的時候，所有的 (誠實以及在線上的) 驗證者會一致同意，任何被指定到的區塊是屬於鏈的一部分。注意區塊仍然會被鏈在一起，主要的差異在，一個區塊的共識來自一個區塊的時間內，而不是依靠鏈的長度或大小來決定。
+
+### What are the benefits of proof of stake as opposed to proof of work?
+
+### 權益證明相較於工作量證明有哪些優勢？
+
+See A Proof of Stake Design Philosophy for a more long-form argument.
+
+這篇文章 - 權益證明的設計哲學：[A Proof of Stake Design Philosophy](https://medium.com/@VitalikButerin/a-proof-of-stake-design-philosophy-506585978d51)，有更完整的論述。
 
 簡短來說：
 * 不需要為了鏈的安全兒**消耗大量電力**，（估計以太坊和比特幣每天都會各消耗一百萬美元在電力及硬體成本上）。
@@ -152,4 +168,3 @@ Casper遵循第二種方法，不過是可以透過增加鏈上的機制，讓va
 2. 選擇性地不公開區塊。這種攻擊的機會成本是一個區塊獎賞，而且這個方法頂多只能讓一個人看到下一個區塊的validator是誰，所以最多可能的獲益也是一個區塊獎賞。唯一的例外是，如果一個validator跳過，則遞補上來的validator和下一個區塊的validator會是同樣一個validator，可以增加一條跳過區塊的罰則來降低其發生的機率。
 
 第三個方法是使用 [Iddo Bentov 的 "majority beacon"](https://arxiv.org/pdf/1406.5694.pdf)，藉由之前產生的（也用 beacon 方式產生的） N 個隨機數字中的每個 bit 值的多數決來產生新的隨機數字（即，如果大多數數字的第一個 bit 為 1 ，則新的數字的第一個 bit 為 1 ，否則為 0 ）。攻擊的成本會是 `~C * sqrt(N)` ，其中 C 是攻擊其他 beacon 產生的隨機數字的成本。總之，有許多 stake grinding 的解決方法存在，這個問題比較像是 [differential cryptanalysis](https://en.wikipedia.org/wiki/Differential_cryptanalysis) 而不是 [the halting problem](https://en.wikipedia.org/wiki/Halting_problem) - 一個 PoS 設計者最終會明瞭且會知道如何克服的痛點，但不是根本且無法彌補的缺陷。
-
