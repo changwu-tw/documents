@@ -30,14 +30,24 @@ See A Proof of Stake Design Philosophy for a more long-form argument.
 
 這篇文章 - 權益證明的設計哲學：[A Proof of Stake Design Philosophy](https://medium.com/@VitalikButerin/a-proof-of-stake-design-philosophy-506585978d51)，有更完整的論述。
 
-簡短來說：
-* 不需要為了鏈的安全兒**消耗大量電力**，（估計以太坊和比特幣每天都會各消耗一百萬美元在電力及硬體成本上）。
-* 因為不需要消耗大量電力，所以**沒有發行等量的貨幣的需要**來提供加入網路的動機。理論上甚至可以有淨量為負值的發行量--以銷毀一部分的交易費的方式來達成。
-* PoS提供了更多利用賽局理論的技術的發揮空間，來**降低中心化節點組織的形成**，及若組織已形成，可能的方法來防止他們進一步傷害網路（例如PoW中的[selfish mining](https://www.cs.cornell.edu/~ie53/publications/btcProcFC.pdf)）。
-* **減少中心化造成的風險**，因為要擴展（scale）所要花的成本相比之下問題小得多。相比一百萬貨幣，一千萬的貨幣會讓你肯定獲得十倍多的報酬，且不需要以失衡的方式，如PoW中當你資本多到一定程度，便可負擔更好的規模生產設備。
-* 可以利用經濟上的懲罰來**大大地拉高不同51%攻擊方式在PoS中所需要的成本**，引用Vlad Zamfir的話--"想像一參與51%攻擊則你的ASIC工廠就會被燒毀"。
+In short:
 
-### PoS和傳統的BFT研究怎麼結合？
+* **No need to consume large quantities of electricity** in order to secure a blockchain (eg. it's estimated that both Bitcoin and Ethereum burn over $1 million worth of electricity and hardware costs per day as part of their consensus mechanism).
+* Because of the lack of high electricity consumption, there is **not as much need to issue as many new coins** in order to motivate participants to keep participating in the network. It may theoretically even be possible to have _negative_ net issuance, where a portion of transaction fees is "burned" and so the supply goes down over time.
+* Proof of stake opens the door to a wider array of techniques that use game-theoretic mechanism design in order to better **discourage centralized cartels** from forming and if they do form from acting in ways that are harmful to the network (eg. like [selfish mining](https://www.cs.cornell.edu/~ie53/publications/btcProcFC.pdf) in proof of work).
+* **Reduced centralization risks**, as economies of scale are much less of an issue. $10 million of coins will get you exactly 10 times higher returns than $1 million of coins, without any additional disproportionate gains because at the higher level you can afford better mass-production equipment.
+* Ability to use economic penalties to **make various forms of 51% attacks vastly more expensive** to carry out than proof of work - to paraphrase Vlad Zamfir, "it's as though your ASIC farm burned down if you participated in a 51% attack".
+
+簡短來說：
+* 不需要為了鏈的安全而**消耗大量電力**，（估計以太坊和比特幣每天都會各消耗一百萬美元在電力及硬體成本上）。
+* 因為不需要消耗大量電力，所以**沒有發行較多新貨幣的需求**，來提供參與者加入網路的動機。理論上甚至可能有負的淨發行量，因為有部分交易手續費不見了，所以供應量隨時間而減少。
+* 權益證明打開更廣泛的技術大門，使用賽局理論與機制設計來避免集權卡特爾的形成，以及當他們的組織會危害到網路。(例如，工作量證明中的自私挖礦 ([selfish mining])(https://www.cs.cornell.edu/~ie53/publications/btcProcFC.pdf))。
+* **減少中心化造成的風險**，當經濟規模不是一個問題。相比一百萬貨幣，一千萬的貨幣讓你獲得高於十倍的報酬，沒有額外不成比例的收益，越有錢你能買得起越多大規模的生產設備。
+* 利用經濟懲罰**來提高不同形式的 51% 攻擊成本**，更勝於工作量證明的實行，引用 Vlad Zamfir 的話，"想像一參與 51% 攻擊，你的 ASIC 工廠就被燒毀"。
+
+### How does proof of stake fit into traditional Byzantine fault tolerance research?
+
+### 權益證明如何套用到傳統的拜占庭容錯研究？
 
 BFT研究中有一些重要的結論是可以應用到各種共識演算法中的，包含傳統的演算法例如PBFT，同時也可用在任何PoS中，如果搭配恰當的數學模型進考量，甚至可以用在PoW中。
 
@@ -123,11 +133,11 @@ Casper遵循第二種方法，不過是可以透過增加鏈上的機制，讓va
 
 ###什麼是弱主觀性（weak subjectivity）？
 
-很重要的一點是，利用存款（deposit，也就是validator下注的資本）來確保"風險成本不為零"的機制確實改變了安全模型（security model）。假設 (I)存款會被鎖住一個月，時間到之後可以提走， (II)有個 51% 攻擊嘗試反轉（revert）長達 10 天的交易量，則這些攻擊者產生的區塊會被寫入鏈裡當作證據且validator會被懲罰。然而，假設攻擊變成長達 40 天，則雖然這些攻擊產生的區塊可以再被寫入鏈裡，但validator早已能把錢提走而不會受到懲罰。為了要解決這個問題，我們需要一個"反轉限制（revert limit）"的規則，也就是當反轉所影響的區塊總時間長度超過存款鎖住的期限，則節點可以拒絕接受這些區塊（在上例，即拒絕影響超過一個月的反轉區外）。這表示節點現在多了兩項要求：
+很重要的一點是，利用存款（deposit，也就是validator下注的資本）來確保"風險成本不為零"的機制確實改變了PoS的安全模型（security model）。假設 (I)存款會被鎖住一個月，時間到之後可以提走， (II)有個 51% 攻擊嘗試反轉（revert）長達 10 天的交易量，則這些攻擊者產生的區塊會被寫入鏈裡當作證據且validator會被懲罰。然而，假設攻擊變成長達 40 天，則雖然這些攻擊產生的區塊可以再被寫入鏈裡，但validator早已能把錢提走而不會受到懲罰。為了要解決這個問題，我們需要一個"反轉限制（revert limit）"的規則，也就是當反轉所影響的區塊總時間長度超過存款鎖住的期限，則節點可以拒絕接受這些區塊（在上例，即拒絕影響超過一個月的反轉區外）。這表示節點現在多了兩項要求：
 
 1. 當節點第一次連上並要同步鏈的資料的時候，他們必須藉由鏈外的方式來驗證最新的狀態，即透過朋友節點們或各個 Block Explorer 等等的方式。如果他們得到的都是同一條一樣的鏈，則可以確定這條是正確的。注意，只有在出現鏈分叉長度超過反轉限制時（在上例，即得到兩條在過去超過一個月的區塊皆不相同的鏈）才需要這種採用這種鏈外的交際驗證（social authentication）。
 
-2. 節點每隔一段"反轉限制"的時間就必須要上線同步。如果沒定時同步，則需要再透過一次鏈外的交際驗證。
+2. 節點每隔一段"反轉限制"的時間就必須要上線同步。如果沒定時同步，則需要再透過一次鏈外的交際驗證來保證狀態的可信度。
 
 這種鏈外的交際驗證事實上範圍有限。如果攻擊者要利用這個管道來攻擊，他們必須要說服社群裡一大部分的人，讓他們相信攻擊者的鏈才是有效的；或是改為說服新加入社群的人--新加入的人可能會在下載軟體時一並收到最近一次的檢查點（checkpoint，即反轉限制的臨界點），但如果攻擊者能竄改這個檢查點的紀錄，則他們要能直接竄改整個軟體也不再是件難事，而且沒有單純的密碼經濟學的驗證方式能解決這個問題。當一個節點連接上了，只要他夠頻繁地上線，他就能以單純密碼經濟學上安全的模型來確保連接上正確的鏈，而不需要額外的鏈外交際驗證。
 
@@ -168,3 +178,163 @@ Casper遵循第二種方法，不過是可以透過增加鏈上的機制，讓va
 2. 選擇性地不公開區塊。這種攻擊的機會成本是一個區塊獎賞，而且這個方法頂多只能讓一個人看到下一個區塊的validator是誰，所以最多可能的獲益也是一個區塊獎賞。唯一的例外是，如果一個validator跳過，則遞補上來的validator和下一個區塊的validator會是同樣一個validator，可以增加一條跳過區塊的罰則來降低其發生的機率。
 
 第三個方法是使用 [Iddo Bentov 的 "majority beacon"](https://arxiv.org/pdf/1406.5694.pdf)，藉由之前產生的（也用 beacon 方式產生的） N 個隨機數字中的每個 bit 值的多數決來產生新的隨機數字（即，如果大多數數字的第一個 bit 為 1 ，則新的數字的第一個 bit 為 1 ，否則為 0 ）。攻擊的成本會是 `~C * sqrt(N)` ，其中 C 是攻擊其他 beacon 產生的隨機數字的成本。總之，有許多 stake grinding 的解決方法存在，這個問題比較像是 [differential cryptanalysis](https://en.wikipedia.org/wiki/Differential_cryptanalysis) 而不是 [the halting problem](https://en.wikipedia.org/wiki/Halting_problem) - 一個 PoS 設計者最終會明瞭且會知道如何克服的痛點，但不是根本且無法彌補的缺陷。
+
+###What would the equivalent of a 51% attack against Casper look like?
+
+###針對Casper對等的 51% 算力攻擊會是怎麼樣的攻擊？
+
+The most basic form of "51% attack" is a simple **finality reversion**: validators that already finalized block A then finalize some competing block A', thereby breaking the blockchain's finality guarantee. In this case, there now exist two incompatible finalized histories, creating a split of the blockchain, that full nodes would be willing to accept, and so it is up to the community to coordinate out of band to focus on one of the branches and ignore the other(s).
+
+51% 攻擊最基本的形式就是**finality reversion**：validator確立區塊A的紀錄為不可更動後又將另一個區塊A'也列為不可更動，打破區塊鏈不可更動特性的保證。在這個情況中，並存著兩個彼此不相容的歷史紀錄導致鏈產生分叉，這需仰賴社群以鏈外的方式進行協調來決定應該選擇哪條鏈，而哪條該被捨棄。
+
+This coordination could take place on social media, through private channels between block explorer providers, businesses and exchanges, various online discussion forms, and the like. The principle according to which the decision would be made is "whichever one was finalized first is the real one". Another alternative is to rely on "market consensus": both branches would be briefly being traded on exchanges for a very short period of time, until network effects rapidly make one branch much more valuable with the others. In this case, the "first finalized chain wins" principle would be a Schelling point for what the market would choose. It's very possible that a combination of both approaches will get used in practice.
+
+協調的管道有很多種，如社群媒體、block explorer及交易所間的溝通、線上論壇等等。決定該選哪條鏈的原則是 "哪條先出現就選哪條" 。另一個方式是讓市場機制去決定：在很短的時間裡，兩條分叉都可以在交易所中交易，直到其中一條因為價值更高而勝出。在這種情況中，"哪條先出現就選哪條" 的原則會是市場機制的 [Schelling point](https://zh.wikipedia.org/wiki/谢林点)，即參與者會因為覺得其他人也會選擇先出現的那條而傾向選擇先出現的那條，所有人在沒有溝通的情況下按照這個傾向選擇了先出現的那條鏈。所以實際中，這兩種方式並用是非常有可能的。
+
+Once there is consensus on which chain is real, users (ie. validators and light and full node operators) would be able to manually insert the winning block hash into their client software through a special option in the interface, and their nodes would then ignore all other chains. No matter which chain wins, there exists evidence that can immediately be used to destroy at least 1/3 of the validators' deposits.
+
+當該選擇哪條鏈的共識達成時，使用者（即validator、light node及full node）就可以手動地將勝出的區塊的雜湊值藉由特殊的選項寫入軟體中，之後他們的節點就會忽略其他（不包含該區塊雜湊值）的鏈。之後不管是哪條鏈被選擇，都有證據可以用來懲罰至少 1/3 的違規validator。
+
+Another kind of attack is liveness denial: instead of trying to revert blocks, a cartel of >=34% of validators could simply refuse to finalize any more blocks. In this case, blocks would never finalize. Casper uses a hybrid chain/BFT-style consensus, and so the blockchain would still grow, but it would have a much lower level of security. If no blocks are finalized for some long period of time (eg. 1 day), then there are several options:
+
+另外一種攻擊是阻斷 liveness：一個由超過 34% validator組成的集團可以拒絕將任何區塊變成不可更動的。在這種情況下，將沒有區塊能被變成不可更動。Casper採用混合（鏈 + BFT型態）的共識，因此鏈還是會持續增長，但安全性會大大降低。如果很長一段時間（例如一天）都沒有區塊被變成不可更動，則有以下幾種選項：
+
+1. The protocol can include an automatic feature to rotate the validator set. Blocks under the new validator set would finalize, but clients would get an indication that the new finalized blocks are in some sense suspect, as it's very possible that the old validator set will resume operating and finalize some other blocks. Clients could then manually override this warning once it's clear that the old validator set is not coming back online. There would be a protocol rule that under such an event all old validators that did not try to participate in the consensus process take a large penalty to their deposits.
+
+可以採用一個自動化的功能來輪轉validator名單，瓦解集團的佔比。在新的validator名單中區塊可以被變為不可更動，但使用者會收到提醒告訴他們這些不可更動的區塊還是不可全信的，因為很有可能舊的一組validator會重新奪回控制權並將其他的區塊變為不可更動。使用者如果確信舊的一組validator不會再上線，就可以手動覆蓋過這些警告。會有規則規定在這種情況發生時，所有舊的validator如果沒有再參與共識過程則會受到相當大筆的罰款。
+
+2. A hard fork is used to add in new validators and delete the attackers' balances.
+
+採用硬分叉的方式移除攻擊者的存款，並增加新的validator。
+
+In case (2), the fork would once again be coordinated via social consensus and possibly via market consensus (ie. the branch with the old and new validator set briefly both being traded on exchanges). In the latter case, there is a strong argument that the market would want to choose the branch where "the good guys win", as such a chain has validators that have demonstrated their goodwill (or at least, their alignment with the interest of the users) and so is a more useful chain for application developers.
+
+在第二種方法中，分叉還是一樣要由鏈外的共識來協調，且可能會由市場共識的方式（即兩條擁有不一樣validator組成的鏈短暫的並存在交易市場上）。如果是藉由市場共識的方式，有個有力的論點是--市場會傾向選擇 "好人勝出" 的鏈，這條鏈的validator展現了他們的誠意（或至少他們和使用者的利益是並存的），因此也是一條對應用開發者較有用的鏈。
+
+Note that there is a spectrum of response strategies here between social coordination and in-protocol automation, and it is generally considered desirable to push as far toward automated resolution as possible so as to minimize the risk of simultaneous 51% attacks and attacks on the social layer (and market consensus tools such as exchanges). One can imagine an implementation of (1) where nodes automatically accept a switch to a new validator set if they do not see a new block being committed for a long enough time, which would reduce the need for social coordination but at the cost of requiring those nodes that do not wish to rely on social coordination to remain constantly online. In either case, a solution can be designed where attackers take a large hit to their deposits.
+
+在選擇攻擊應對的策略時，在交際協調和機制內自動化之間其實有如一道光譜，並不是非黑即白，通常設計越可能往自動化的解法越理想，因為這可以降低當 51% 攻擊和社交層面（包含市場共識如交易所）的攻擊同時發生時的風險。可以想像一個措施，採用 1 的方式使節點在超過一定時間都沒有區塊被 commit 時自動更換validator名單，這會降低交際協調的需要但節點也因此要更頻繁地保持上線。但不管是哪種方式，攻擊者都要損失一大筆的存款。
+
+A more insidious kind of attack is a censorship attack, where >= 34% of validators refuse to finalize blocks that contain certain kinds of transactions that they do not like, but otherwise the blockchain keeps going and blocks keep getting finalized. This could range from a mild censorship attack which only censors to interfere with a few specific applications (eg. selectively censoring transactions in something like Raiden or the lightning network is a fairly easy way for a cartel to steal money) to an attack that blocks all transactions.
+
+另外一種比較不容易發覺的攻擊是審查攻擊--當超過 34% 的validator拒絕將含有某些（他們不喜歡的）特定交易的區塊變為不可更動，除此之外鏈的運作都正常。攻擊的範圍從輕微的，干擾特定應用（如過濾 Raiden 或閃電網路的交易是較簡單偷錢的方式）的攻擊到阻擋所有交易的大範圍攻擊。
+
+There are two sub-cases. The first is where the attacker has 34-67% of the stake. Here, we can program validators to refuse to finalize or build on blocks that they subjectively believe are clearly censoring transactions, which turns this kind of attack into a more standard liveness attack. The more dangerous case is where the attacker has more than 67% of the stake. Here, the attacker can freely block any transactions they wish to block and refuse to build on any blocks that do contain such transactions.
+
+其中又分成兩個類別，第一個是攻擊者掌控 34%-67% 的下注資本。我們可以將validator設計成拒絕將他們主觀認定為正在過濾交易的區塊變成不可更動或接在其後，這讓這種攻擊變為一個標準的 liveness 攻擊。比較危險的情況是當攻擊者掌控超過 67% 的下注資本，攻擊者可以任意的阻擋他們不喜歡的交易並拒絕接在包含這些交易的區塊後面。
+
+There are two lines of defense. First, because Ethereum is Turing-complete it is [naturally somewhat resistant to censorship](http://hackingdistributed.com/2016/07/05/eth-is-more-resilient-to-censorship/) as censoring transactions that have a certain effect is in some ways similar to solving the halting problem. Because there is a gas limit, it is not literally impossible, though the "easy" ways to do it do open up denial-of-service attack vulnerabilities.
+
+面對這個攻擊有兩道防線。第一，因為以太坊具有圖靈完備特性，[在本質上就具有抵抗審查的能力](http://hackingdistributed.com/2016/07/05/eth-is-more-resilient-to-censorship/)，因為審查交易的過程在某種程度上相似於解決停機問題（halting problem）。但因為區塊有 gas 限制，所以審查並不是不可能，不過用"簡單"的方式來進行審查會讓攻擊者反而有被DoS的風險。
+
+This resistance [is not perfect](https://pdaian.com/blog/on-soft-fork-security/), and there are ways to improve it. The most interesting approach is to add in-protocol features where transactions can automatically schedule future events, as it would be extremely difficult to try to foresee what the result of executing scheduled events and the events resulting from those scheduled events would be ahead of time. Validators could then use obfuscated sequences of scheduled events to deposit their ether, and dilute the attacker to below 33%.
+
+單純具有這個抵抗能力[還不夠好](https://pdaian.com/blog/on-soft-fork-security/)，還有其他方式可以加強抵抗審查的能力。最有趣的方式是增加一個機制內的功能--讓交易能自動規劃未來的事件，因為預測這些事件的執行結果或是這些事件又再產生的事件是很難的。validator可以藉由混淆事件規劃的順序來下注存款，藉此稀釋攻擊者的佔比到低於 33% 。
+
+Second, one can introduce the notion of an "active fork choice rule", where part of the process for determining whether not a given chain is valid is trying to interact with it and verifying that it is not trying to censor you. The most effective way to do this would be for nodes to repeatedly send a transaction to schedule depositing their ether and then cancel the deposit at the last moment. If nodes detect censorship, they could then follow through with the deposit, and so temporarily join the validator pool en masse, diluting the attacker to below 33%. If the validator cartel censors their attempts to deposit, then nodes running this "active fork choice rule" would not recognize the chain as valid; this would collapse the censorship attack into a liveness denial attack, at which point it can be resolved through the same means as other liveness denial attacks.
+
+第二，引進 "active fork choice rule" 的概念--當面臨鏈分叉情況，其中一個選擇鏈的考量是和鏈進行互動並藉此驗證該鏈是否有在過濾你的交易。最有效的方式是節點重複地送出一筆交易來規劃下注存款並在最後一刻取消。如果節點偵測到審查機制，就不取消並暫時一起加入成為validator之一，將攻擊者的佔比稀釋到 33% 。如果集團過濾掉他們的存款交易的話，則採用這個 "active fork choice rule" 的節點就不會選擇這條鏈。這會讓審查攻擊轉變為 liveness 攻擊，此時就可以藉由解決 liveness 攻擊的方式來處理。
+
+###That sounds like a lot of reliance on out-of-band social coordination; is that not dangerous?
+
+###聽起來似乎很仰賴鏈外的社交協調，這樣難道不危險嗎？
+
+Attacks against Casper are extremely expensive; as we will see below, attacks against Casper cost as much, if not more, than the cost of buying enough mining power in a proof of work chain to permanently 51% attack it over and over again to the point of uselessness. Hence, the recovery techniques described above will only be used in very extreme circumstances; in fact, advocates of proof of work also generally express willingness to use social coordination in similar circumstances by, for example, [changing the proof of work algorithm](https://news.bitcoin.com/bitcoin-developers-changing-proof-work-algorithm/). Hence, it is not even clear that the need for social coordination in proof of stake is larger than it is in proof of work.
+
+攻擊 Casper 代價非常高。以下我們將會講到，攻擊 Casper 的代價至少和買礦機持續不斷的對PoW鏈發動 51% 攻擊直到無效果為止的代價一樣。因此，上面段落所描述的復原方法只有在非常極端的情形才會用到。事實上，PoW的提倡者亦表達在某些相似情況採用社交協調的意願，例如[改變PoW的算法](https://news.bitcoin.com/bitcoin-developers-changing-proof-work-algorithm/)。所以PoS需要的社交協調是否會比PoW所需要的社交協調還多還無明確的結果。
+
+In reality, we expect the amount of social coordination required to be near-zero, as attackers will realize that it is not in their benefit to burn such large amounts of money to simply take a blockchain offline for one or two days.
+
+在現實中，我們預期用到社交協調的方式的次數會接近零次，因為攻擊者會瞭解到單純為了讓區塊鏈停擺一兩天要花費這麼大量的錢是不符合利益的。
+
+###Doesn't MC => MR mean that all consensus algorithms with a given security level are equally efficient (or in other words, equally wasteful)?
+
+###邊際成本趨近邊際收益不就表示所有具有一定高度安全層級的共識演算法都一樣有效（或一樣地浪費）？
+
+This is an argument that many have raised, perhaps best explained by [Paul Sztorc in this article](http://www.truthcoin.info/blog/pow-cheapest/). Essentially, if you create a way for people to earn $100, then people will be willing to spend anywhere up to $99.9 (including the cost of their own labor) in order to get it; marginal cost approaches marginal revenue. Hence, the theory goes, any algorithm with a given block reward will be equally "wasteful" in terms of the quantity of socially unproductive activity that is carried out in order to try to get the reward.
+
+許多人都提出過這個論點，而解釋最清楚的就屬[Paul Sztorc 的這篇文章(http://www.truthcoin.info/blog/pow-cheapest/)。其中的重點是，如果你創造一個有 100 元獎賞的機會，則大家為了得到它會願意花費最高到 99.9 元（包含自己付出的勞力），此時邊際成本趨近邊際效益。因此，這個理論說--任何提供區塊獎賞的演算法，其中為了獲取獎賞而進行對社會無效益的活動的數量都是一樣的，即它們都一樣地浪費資源。
+
+There are three flaws with this:
+
+1. It's not enough to simply say that marginal cost approaches marginal revenue; one must also posit a plausible mechanism by which someone can actually expend that cost. For example, if tomorrow I announce that every day from then on I will give $100 to a randomly selected one of a given list of ten people (using my laptop's /dev/urandom as randomness), then there is simply no way for anyone to send $99 to try to get at that randomness. Either they are not in the list of ten, in which case they have no chance no matter what they do, or they are in the list of ten, in which case they don't have any reasonable way to manipulate my randomness so they're stuck with getting the expected-value $10 per day.
+
+這個理論有三個盲點：
+
+單純地說邊際成本趨近邊際效益是不夠的，必須還要假設一個有人可以真的花費那些成本的機制存在。例如，假設我明天宣布之後每一天我都會隨機地從一個十人名單中挑出一個人並給予他 100 元，然而沒有人有辦法花費 99 元來取得其中的隨機值。他們要不是不在名單中不管怎樣都拿不到獎賞，要不就是在名單中但沒有任何有效的方法取得我的隨機值，只有期望值為平均每天 10 元的獎賞。
+
+2. MC => MR does NOT imply total cost approaches total revenue. For example, suppose that there is an algorithm which pseudorandomly selects 1000 validators out of some very large set (each validator getting a reward of $1), you have 10% of the stake so on average you get 100, and at a cost of $1 you can force the randomness to reset (and you can repeat this an unlimited number of times). Due to the [central limit theorem](https://en.wikipedia.org/wiki/Central_limit_theorem), the standard deviation of your reward is $10, and based on [other known results in math](http://math.stackexchange.com/questions/89030/expectation-of-the-maximum-of-gaussian-random-variables) the expected maximum of N random samples is slightly under M + S * sqrt(2 * log(N)) where M is the mean and S is the standard deviation. Hence the reward for making additional trials (ie. increasing N) drops off sharply, eg. with 0 re-trials your expected reward is $100, with one re-trial it's $105.5, with two it's $108.5, with three it's $110.3, with four it's $111.6, with five it's $112.6 and with six it's $113.5. Hence, after five retrials it stops being worth it. As a result, an economically motivated attacker with ten percent of stake will inefficiently spend $5 to get an additional revenue of $13, though the total revenue is $113. If the exploitable mechanisms only expose small opportunities, the economic loss will be small; it is decidedly NOT the case that a single drop of exploitability brings the entire flood of PoW-level economic waste rushing back in. This point will also be very relevant in our below discussion on capital lockup costs.
+
+邊際成本趨近邊際效益不表示總成本趨近總收益。例如，假設存在一個演算法利用偽隨機（pseudo-randomly）的方式從一大群validator中選擇 1000 位validator(一個validator獲得 1 元獎賞)，你資本佔總資本的 10% 所以你平均會獲得 100 元，且你可以用花費 1 元來（無限次地）重設隨機值。因為 [central limit theorem](https://en.wikipedia.org/wiki/Central_limit_theorem)，你可獲得的獎賞的標準差是 10 元，又因為[其他已知的數學結論](http://math.stackexchange.com/questions/89030/expectation-of-the-maximum-of-gaussian-random-variables)， N 個隨機抽樣中最大的期望值約略小於 ` M + S * sqrt(2 * log(N))` ，其中 M 是中間值且 S 是標準差。因此增加重設隨機值的次數（即增加 N ）所獲得的獎賞會快速地下降，例如如果完全不嘗試重設隨機值你的期望獲利是 100 元，如果嘗試一次是 105.5 元，兩次是 108.5 元，三次是 110.3 元，四次是 111.6 元，五次是 112.6 元，六次是 113.5元（只增加 0.9 元的獲利）。因此嘗試超過五次之後就不值得再繼續嘗試。所以一個由經濟因素所驅動的攻擊者，如果他總資本佔 10% ，則他會花費 5 元嘗試重設隨機值來獲得額外的 13 元的獲利，即便這麼做很沒效率。如果一個機制可被有心人士利用，但被利用的機率不高，則損失不會多，但這不適用於出現一個漏洞而導致全部 PoW 資源投入造成浪費的情況。而這點也和下一章節要介紹的 capital lockup costs 非常相關。
+
+3. Proof of stake can be secured with much lower total rewards than proof of work.
+
+PoS 要變得安全穩固所需要的獎賞比起 PoW 的獎賞少的非常多。
+
+###What about capital lockup costs?
+
+Locking up X ether in a deposit is not free; it entails a sacrifice of optionality for the ether holder. Right now, if I have 1000 ether, I can do whatever I want with it; if I lock it up in a deposit, then it's stuck there for months, and I do not have, for example, the insurance utility of the money being there to pay for sudden unexpected expenses. I also lose some freedom to change my token allocations away from ether within that timeframe; I could simulate selling ether by shorting an amount equivalent to the deposit on an exchange, but this itself carries costs including exchange fees and paying interest. Some might argue: isn't this capital lockup inefficiency really just a highly indirect way of achieving the exact same level of economic inefficiency as exists in proof of work? The answer is no, for both reasons (2) and (3) above.
+
+將 X 的 ether 鎖進存庫是有代價的，例如犧牲選擇其他選項的機會。如果我有 1000 ether ，我想怎麼使用就怎麼使用，但如果我將它鎖在存庫裡數個月，而且沒有保險來支付可能的意外支出的時候該怎麼辦。在這段時間我同時也失去從 ether 轉移成其他代幣的自由。我可以透過賣空相等數量 ether 的方式來模擬賣掉我的 ether，但其中隱含了交易手費續和利息。有些人可能會認為： captital lockup 造成的經濟上的不便和 PoW 造成的經濟層面上無效率的程度不是一樣嗎？答案是否定的，如同上一章節的 理由(2) 和 理由(3)。
+
+Let us start with (3) first. Consider a model where proof of stake deposits are infinite-term, ASICs last forever, ASIC technology is fixed (ie. no Moore's law) and electricity costs are zero. Let's say the equilibrium interest rate is 5% per annum. In a proof of work blockchain, I can take $1000, convert it into a miner, and the miner will pay me $50 in rewards per year forever. In a proof of stake blockchain, I would buy $1000 of coins, deposit them (ie. losing them forever), and get $50 in rewards per year forever. So far, the situation looks completely symmetrical (technically, even here, in the proof of stake case my destruction of coins isn't fully socially destructive as it makes others' coins worth more, but we can leave that aside for the moment). The cost of a "Maginot-line" 51% attack (ie. buying up more hardware than the rest of the network) increases by $1000 in both cases.
+
+我們先從 理由(3) 開始講起。考慮一種模型：PoS存款是無限期的、ASICs可以永久持續運作、ASIC技術固定（即不適用摩爾定律）而且電力花費是零，並假設穩定的利率是每年 5%。在 PoW 鏈裡，我花 1000 元買了礦機，礦機每年給我 50 元的利潤直到永遠。在 PoS鏈中，我存 1000 元（因為存款是無限期的所以這筆錢當作花掉）並獲得每年 50 元的利潤直到永遠。到目前為止，兩種情況看起來是等價的（雖然技術上來說，在PoS中當我的存款因違規被銷毀，會間接造成其他人的存款價值升高，但這邊我們先不討論）。任何人發動 "Maginot-line" 51% 攻擊（即硬體買得比網路其他人加起來還多）的成本在兩種情況都會再加上 1000 元。
+
+Now, let's perform the following changes to our model in turn:
+
+1. Moore's law exists, ASICs depreciate by 50% every 2.772 years (that's a continuously-compounded 25% per annum; picked to make the numbers simpler). If I want to retain the same "pay once, get money forever" behavior, I can do so: I would put $1000 into a fund, where $167 would go into an ASIC and the remaining $833 would go into investments at 5% interest; the $41.67 dividends per year would be just enough to keep renewing the ASIC hardware (assuming technological development is fully continuous, once again to make the math simpler). Rewards would go down to $8.33 per year; hence, 83.3% of miners will drop out until the system comes back into equilibrium with me earning $50 per year, and so the Maginot-line cost of an attack on PoW given the same rewards drops by a factor of 6.
+
+現在假設模型依序做以下的變更：
+
+摩爾定律適用，ASICs 每 2.772 年貶值一次（方便計算，大約是持續每年降低 25%）。如果我要繼續保持 "付一次，永遠都能持續拿回錢" 的模式，我可以：將 1000 變成一筆資金，其中167會花費在 ASICs 上，833 元花在 5% 報酬率的投資。每年 41.67 元的利潤剛好足夠花在更新 ASICs設備上（方便計算，假設技術發展是穩定連續的）。這時利潤會降低至每年 8.33 元，因此 83.3% 的礦工會放棄直到系統回到每年有 50 元利潤的穩定狀態，所以在利潤這麼低的 PoW鏈發動 Maginot-line 51% 攻擊的成本會大幅地縮小（至少六倍）。
+
+2. Electricity plus maintenance makes up 1/3 of mining costs. We estimate the 1/3 from recent mining statistics: one of Bitfury's new data centers consumes [0.06 joules per gigahash](http://www.coindesk.com/bitfury-details-100-million-georgia-data-center/), or 60 J/TH or 0.000017 kWh/TH, and if we assume the entire Bitcoin network has similar efficiencies we get 27.9 kWh per second given [1.67 million TH/s total Bitcoin hashpower](http://bitcoinwatch.com/). Electricity in China costs [$0.11 per kWh](http://www.statista.com/statistics/477995/global-prices-of-electricity-by-select-country/), so that's about $3 per second, or $260,000 per day. Bitcoin block rewards plus fees are $600 per BTC * 13 BTC per block * 144 blocks per day = $1.12m per day. Thus electricity itself would make up 23% of costs, and we can back-of-the-envelope estimate maintenance at 10% to give a clean 1/3 ongoing costs, 2/3 fixed costs split. This means that out of your $1000 fund, only $111 would go into the ASIC, $55 would go into paying ongoing costs, and $833 would go into hardware investments; hence the Maginot-line cost of attack is 9x lower than in our original setting.
+
+電力加上硬體維護組成大約 1/3 的挖礦成本。1/3 是從最近的數據估計而來的：Bitfury 的新資料中心 [每 gigahash 電力消耗為 0.06 焦耳 ](http://www.coindesk.com/bitfury-details-100-million-georgia-data-center/)，或 每 terahash 60 焦耳、每terahash 0.000017千瓦小時。如果假設比特幣網路的平均消耗皆如此的話，以[比特幣總共算立約 1.67 million TH/s](http://bitcoinwatch.com/) 來算每秒約消耗 27.9 千瓦小時。中國電力成本為[每千瓦小時 0.11 元 ](http://www.statista.com/statistics/477995/global-prices-of-electricity-by-select-country/)，約為每秒 3 元或每天 260000 元。比特幣區塊獎賞加上手續費為 600 * 13 * 144 = 1.12m，一天 112 萬元。因此電力組成約 23% 的成本，而且我們可以用簡單的計算預估硬體維護成本為 10% 。這表示你的 1000 元資金裡，111 元要拿來付 ASICs，55 元要拿來付持續性的花費如電力和維護等，而 833 元會花在投資上，因此現在要發動 Maginot-line 51% 攻擊的成本已經是一開始的九倍小了。
+
+3. Deposits are temporary, not permanent. Sure, if I voluntarily keep staking forever, then this changes nothing. However, I regain some of the optionality that I had before; I could quit within a medium timeframe (say, 4 months) at any time. This means that I would be willing to put more than $1000 of ether in for the $50 per year gain; perhaps in equilibrium it would be something like $3000. Hence, the cost of the Maginot line attack on PoS increases by a factor of three, and so on net PoS gives 27x more security than PoW for the same cost.
+
+事實上存款是短暫而非永遠（被視為拿不回來）的。當然你自願永遠存著的話也行。然而不同的是，我現在至少多了一些空間選項，我可以在任何時間內結束並等待一段時間（如四個月）。這表示我願意花更多的錢來獲得更多的利潤（因為投資不會再被當作拿不回來的錢），或許是 3000 元。因此，在 PoS 鏈上發動 Maginot line 51% 攻擊的成本增加為原本的三倍，和 PoW 比起來是 27 倍的安全性。
+
+The above included a large amount of simplified modeling, however it serves to show how multiple factors stack up heavily in favor of PoS in such a way that PoS gets more bang for its buck in terms of security. The meta-argument for why this [perhaps suspiciously multifactorial argument](http://lesswrong.com/lw/kpj/multiple_factor_explanations_should_not_appear/) leans so heavily in favor of PoS is simple: in PoW, we are working directly with the laws of physics. In PoS, we are able to design the protocol in such a way that it has the precise properties that we want - in short, we can optimize the laws of physics in our favor. The "hidden trapdoor" that gives us (3) is the change in the security model, specifically the introduction of weak subjectivity.
+
+以上包含了很多簡化過的計算，但它的目的是為了指出經過許多因素考量，都顯示出 PoS 擁有更高的安全性。而這個[看似可疑的多重因素論點](http://lesswrong.com/lw/kpj/multiple_factor_explanations_should_not_appear/)為何這麼強烈凸顯 PoS 的優點的主要理由是：在 PoW 中，我們操作利用物理特性；而在 PoS 中，我們可以設計出一套準確具有我們想要的特性的機制 - 簡而言之，我們可以用我們的方式來優化 "物理特性"。這個讓我們能得到 理由(3) 的 "隱藏的機關" 即是在安全模型上的改變，特別是弱主觀性（weak subjectivity）這個性質的出現。
+
+Now, we can talk about the marginal/total distinction. In the case of capital lockup costs, this is very important. For example, consider a case where you have $100,000 of ether. You probably intend to hold a large portion of it for a long time; hence, locking up even $50,000 of the ether should be nearly free. Locking up $80,000 would be slightly more inconvenient, but $20,000 of breathing room still gives you a large space to maneuver. Locking up $90,000 is more problematic, $99,000 is very problematic, and locking up all $100,000 is absurd, as it means you would not even have a single bit of ether left to pay basic transaction fees. Hence, your marginal costs increase quickly. We can show the difference between this state of affairs and the state of affairs in proof of work as follows:
+
+接者我們可以討論 邊際成本/效益 和 總成本/效益 的不同。在 capital lockup costs 的情況中這非常重要。例如假設一個情況，你有價值 100000 的 ether，你會傾向長久持有絕大部分的錢。因此鎖住其中的 50000 應該不會有什麼問題，鎖住 80000 可能會有一點不方便雖然 20000 還是有夠充足可以利用，鎖住 90000 就有點問題了，99000 問題就大了，全鎖住那你可能是瘋了，因為你會連交易費都出不起。因此你的邊際成本快速的增加，我們可以用以下方式比較 PoS 情況和 PoW 情況的不同：
+
+![](https://blog.ethereum.org/wp-content/uploads/2014/07/liquidity.png)
+
+Hence, the total cost of proof of stake is potentially much lower than the marginal cost of depositing 1 more ETH into the system multiplied by the amount of ether currently deposited.
+
+可以看到，在 PoS 現有的總存款中再存入 1 ether 的總成本是遠低於邊際成本的。
+
+Note that this component of the argument unfortunately does not fully translate into reduction of the "safe level of issuance". It does help us because it shows that we can get substantial proof of stake participation even if we keep issuance very low; however, it also means that a large portion of the gains will simply be borne by validators as economic surplus.
+
+注意，這部分的論點可惜地並沒有完全解釋到 "safe level of issuance"。但其顯示出即使我們將貨幣發行量控制地很低，我們還是能獲得可觀的 PoS 參與數，雖然這也代表很大一部分的發行量會被用來當作獎賞驗證者。
+
+###Will exchanges in proof of stake pose a similar centralization risk to pools in proof of work?
+
+###在 PoS 的礦池會有類似 PoW 礦池中心化的風險嗎？
+
+From a centralization perspective, in both [Bitcoin](https://blockchain.info/pools) and [Ethereum](https://etherscan.io/stats/miner?range=7&blocktype=blocks) it's the case that roughly three pools are needed to coordinate on a 51% attack (4 in Bitcoin, 3 in Ethereum at the time of this writing). In PoS, if we assume 30% participation including all exchanges, then [three exchanges](https://etherscan.io/accounts) would be enough to make a 51% attack; if participation goes up to 40% then the required number goes up to eight. However, exchanges will not be able to participate with all of their ether; the reason is that they need to accomodate withdrawals.
+
+從 [Bitcoin](https://blockchain.info/pools) 和 [Ethereum](https://etherscan.io/stats/miner?range=7&blocktype=blocks) 來看，大約需要三個礦池聯合才能發動 51% 攻擊（ 在寫這篇文章的時候，Bitcoin 約需四個、Ethereum 約需三個）。假設在 PoS 包含所有礦池、交易所共有 30% 的參與率，則 [三個礦池、交易所](https://etherscan.io/accounts) 就足夠發動 51% 攻擊；如果參與率提高到 40% 則需要八個。另外礦池、交易所也不能將所有資本投入攻擊中，因為他們需要保留部分金錢來應付客戶。
+
+Additionally, pooling in PoS is discouraged because it has a much higher trust requirement - a proof of stake pool can pretend to be hacked, destroy its participants' deposits and claim a reward for it. On the other hand, the ability to earn interest on one's coins without oneself running a node, even if trust is required, is something that many may find attractive; all in all, the centralization balance is an empirical question for which the answer is unclear until the system is actually running for a substantial period of time. With sharding, we expect pooling incentives to reduce further, as (i) there is even less concern about variance, and (ii) in a sharded model, transaction verification load is proportional to the amount of capital that one puts in, and so there are no direct infrastructure savings from pooling.
+
+再加上組成 PoS 的礦池的動機是較低的，因為會需要較高的信任成本 - 礦池不偷錢，但是可以假裝被駭導致資本全被沒收，且同時扮成檢舉者領檢舉獎金。不過另一方面，不需要自己跑一個就能用自己的錢賺利潤仍是很有吸引力的，即便需要信任對方。總之，中心化和去中心化間的平衡是需要經驗才能找到答案的，也只有等到系統真的上線一段時間了才有辦法得到答案。但配上 sharding 之後，我們預計會更近一步降低中心化，因為 (i) 需要考量的變化更少且 (ii) 在 sharding 模型中，驗證交易的負擔和所投入的資本成正比，所以並不會因為組成礦池而有任何直接的成本支出的節省。
+
+A final point is that centralization is less harmful in proof of stake than in proof of work, as there are much cheaper ways to recover from successful 51% attacks; one does not need to switch to a new mining algorithm.
+
+最後一點是，中心化在 PoS 中比其在 PoW 中的負面影響更小，因為從 51% 攻擊中復原容易且便宜多了，也不必要換到新的挖礦演算法。
+
+###Can proof of stake be used in private/consortium chains?
+
+###PoS 能被用在私有鏈或聯盟鏈嗎？
+
+Generally, yes; any proof of stake algorithm can be used as a consensus algorithm in private/consortium chain settings. The only change is that the way the validator set is selected would be different: it would start off as a set of trusted users that everyone agrees on, and then it would be up to the validator set to vote on adding in new validators.
+
+一般來說是可以的。任何 PoS 演算法都可以被私有鏈或聯盟鏈用做一個共識演算法。唯一不同是成為驗證者的方式：一開始會由一群大家同意且信任的使用者成為驗證者，接著再由這群驗證者透過投票去加入新的驗證者。
